@@ -13,8 +13,11 @@ public class CardGameManager : MonoBehaviour, IOnEventCallback
     public GameObject netPlayerPrefab;
     public CardPlayer P1;
     public CardPlayer P2;
-    public float restoreValue=5;
-    public float damageValue=10;
+    public PlayerStats defaultPlayerStats = new PlayerStats() {
+        MaxHealth=100,
+        RestoreValue=5,
+        DamageValue=10
+    };
     public GameState State, NextState = GameState.NetPlayersIntialization;
     public GameObject gameOverPanel;
     public TMP_Text winnerText;
@@ -43,26 +46,33 @@ public class CardGameManager : MonoBehaviour, IOnEventCallback
     private void Start()
     {
         gameOverPanel.SetActive(false);
+        //!multiplayer online
         if(Online) {
             PhotonNetwork.Instantiate(netPlayerPrefab.name, Vector3.zero, Quaternion.identity);
             StartCoroutine(PingCoroutine());
             State = GameState.NetPlayersIntialization;
             NextState = GameState.NetPlayersIntialization;
 
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(PropertyNames.Room.RestoreValue, out var restoreValue)) {
-                this.restoreValue = (float)restoreValue;
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(PropertyNames.Room.RestoreValue, out var RestoreValue)) {
+                defaultPlayerStats.RestoreValue = (float)RestoreValue;
             }
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(PropertyNames.Room.DamageValue, out var damageValue)) {
-                this.damageValue = (float)damageValue;
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(PropertyNames.Room.DamageValue, out var DamageValue)) {
+                defaultPlayerStats.DamageValue = (float)DamageValue;
             }
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(PropertyNames.Room.MaxHealth, out var MaxHealth)) {
-                P1.MaxHealth = (float)MaxHealth;
-                P2.MaxHealth = (float)MaxHealth;
+                P1.stats.MaxHealth = (float)MaxHealth;
+                P2.stats.MaxHealth = (float)MaxHealth;
             }
         }
         else {
             State = GameState.ChooseAttack;
         }
+
+        //!bot
+        P1.SetStats(defaultPlayerStats, true);
+        P2.SetStats(defaultPlayerStats, true);
+        P1.IsReady=true;
+        P2.IsReady=true;
         //* Mengecek posisi state
         //     Debug.Log(state == State.ChooseAttack);
         //     state = State.Damages;
@@ -138,13 +148,13 @@ public class CardGameManager : MonoBehaviour, IOnEventCallback
                     //* Calculate Health
                     if (damagedPlayer == P1)
                     {
-                        P1.ChangeHealth(-damageValue);
-                        P2.ChangeHealth(restoreValue);
+                        P1.ChangeHealth(-P2.stats.DamageValue);
+                        P2.ChangeHealth(-P2.stats.RestoreValue);
                     }
                     else
                     {
-                        P2.ChangeHealth(restoreValue);
-                        P1.ChangeHealth(-damageValue);
+                        P2.ChangeHealth(P1.stats.RestoreValue);
+                        P1.ChangeHealth(-P1.stats.DamageValue);
                     }
 
                     var winner = GetWinner();

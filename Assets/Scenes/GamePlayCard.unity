@@ -384,10 +384,14 @@ MonoBehaviour:
   nameText: {fileID: 713568645}
   healthText: {fileID: 1266985615}
   healthBar: {fileID: 2040133906}
+  IsReady: 0
   audioSource: {fileID: 1813438528}
   damageClip: {fileID: 8300000, guid: 881e3f52c86c94f26a60718d35627cd8, type: 3}
   Health: 100
-  MaxHealth: 100
+  stats:
+    MaxHealth: 100
+    RestoreValue: 5
+    DamageValue: 10
 --- !u!1 &58820159
 GameObject:
   m_ObjectHideFlags: 0
@@ -592,8 +596,10 @@ MonoBehaviour:
   netPlayerPrefab: {fileID: 5554368752074587299, guid: 7241a7f13aa19b34f98111288ee3a22d, type: 3}
   P1: {fileID: 34315182}
   P2: {fileID: 2041761459}
-  restoreValue: 5
-  damageValue: 50
+  defaultPlayerStats:
+    MaxHealth: 100
+    RestoreValue: 5
+    DamageValue: 10
   State: 0
   NextState: 0
   gameOverPanel: {fileID: 1265600983}
@@ -3574,10 +3580,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 125713547}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Replay
-        m_Mode: 5
+      - m_Target: {fileID: 125713549}
+        m_TargetAssemblyTypeName: GamePlayNetworkManager, Assembly-CSharp
+        m_MethodName: BackToLobby
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4575,7 +4581,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2041761459}
   gameManager: {fileID: 125713547}
-  choosingInterval: 0.5
+  stats:
+    Name: 
+    ChoosingInterval: 0
+    MaxHealth: 0
+    RestoreValue: 0
+    DamageValue: 0
+  IsReady: 0
 --- !u!4 &1907461096
 Transform:
   m_ObjectHideFlags: 0
@@ -4892,10 +4904,14 @@ MonoBehaviour:
   nameText: {fileID: 238391508}
   healthText: {fileID: 971972330}
   healthBar: {fileID: 345917664}
+  IsReady: 0
   audioSource: {fileID: 1813438528}
   damageClip: {fileID: 8300000, guid: 881e3f52c86c94f26a60718d35627cd8, type: 3}
   Health: 100
-  MaxHealth: 100
+  stats:
+    MaxHealth: 100
+    RestoreValue: 5
+    DamageValue: 10
 --- !u!1 &2074641453
 GameObject:
   m_ObjectHideFlags: 0
